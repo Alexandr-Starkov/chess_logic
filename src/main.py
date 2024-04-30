@@ -24,7 +24,3 @@ class Board:
 
         print('-' * (self.width * 4 + 1))
 
-
-b = Board()
-b.create_board()
-b.draw_board()
