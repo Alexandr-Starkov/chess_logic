@@ -2,6 +2,9 @@ from typing import List
 
 
 class Figure:
+    def __init__(self) -> None:
+        self.identity = 'n'
+
     def move(self):
         pass
 
@@ -74,15 +77,20 @@ class Board:
                 self.board.append([' '] * self.width)
 
     def draw_board(self):
-        '''playfield drawing'''
+        '''board drawing'''
         # line before board
         line = '  ' + '-' * (self.width * 4 + 1)
         print(line)
 
         # draw board with figures
         for row, char in zip(range(len(self.board)), ('ABCDEFGH')):
-            print(self.board[row])
-            row = char + ' | ' + ' | '.join(self.board[row]) + ' |'
+            row_items = []
+            for item in self.board[row]:
+                if isinstance(item, Figure):
+                    row_items.append(item.identity)
+                else:
+                    row_items.append(' ')
+            row = char + ' | ' + ' | '.join(row_items) + ' |'
             print(row)
 
         # line after board
@@ -93,9 +101,24 @@ class Board:
         digits = '    1   2   3   4   5   6   7   8'
         print(digits)
 
-    def insert_figure(self, figure_list: List):
+    def insert_figure(self, figure_list: List[Figure]):
         '''add player figures to the field'''
-        pass
+        for index, figure in enumerate(figure_list):
+            if figure.identity == 'p':  # pawns
+                if index <= 7:
+                    self.board[1][index] = figure
+                else:
+                    self.board[6][index - 8] = figure
+
+    def prepare_figure(self):
+        '''figure preparation'''
+        p = Pawn()
+        figures = []
+
+        pawns_list = p.create_pawns()
+        figures.extend(pawns_list)
+
+        self.insert_figure(figures)
 
     def shape_labels(self):
         '''description of all the designations in the game'''
