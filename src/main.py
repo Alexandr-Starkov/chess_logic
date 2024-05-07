@@ -14,7 +14,7 @@ class Figure:
 
 class Pawn(Figure):
     def __init__(self):
-        self.identity = 'p'
+        self.identity = '♟︎'
 
     @staticmethod
     def create_pawns():
@@ -22,40 +22,85 @@ class Pawn(Figure):
 
         for i in range(1, 17):
             p = Pawn()
-            p.id = i
+            p.id = f'{p.identity} {str(i)}'
             pawns.append(p)
 
         return pawns
 
 
 class Knight(Figure):
+    def __init__(self) -> None:
+        self.identity = '♞'
+
     @staticmethod
-    def create_knights(self):
-        pass
+    def create_knights():
+        knights = []
+        for i in range(1, 5):
+            k = Knight()
+            k.id = f'{k.identity} {str(i)}'
+            knights.append(k)
+
+        return knights
 
 
-class Bishops(Figure):
+class Bishop(Figure):
+    def __init__(self) -> None:
+        self.identity = '♝'
+
     @staticmethod
-    def create_bishops(self):
-        pass
+    def create_bishops():
+        bishops = []
+        for i in range(1, 5):
+            b = Bishop()
+            b.id = f'{b.identity} {str(i)}'
+            bishops.append(b)
+
+        return bishops
 
 
 class Rook(Figure):
+    def __init__(self) -> None:
+        self.identity = '♜'
+
     @staticmethod
-    def create_rooks(self):
-        pass
+    def create_rooks():
+        rooks = []
+        for i in range(1, 5):
+            r = Rook()
+            r.id = f'{r.identity} {str(i)}'
+            rooks.append(r)
+
+        return rooks
 
 
 class Queen(Figure):
+    def __init__(self) -> None:
+        self.identity = '♛'
+
     @staticmethod
-    def create_queen(self):
-        pass
+    def create_queen():
+        queens = []
+        for i in range(1, 3):
+            q = Queen()
+            q.id = f'{q.identity} {str(i)}'
+            queens.append(q)
+
+        return queens
 
 
 class King(Figure):
+    def __init__(self) -> None:
+        self.identity = '♚'
+
     @staticmethod
     def create_king():
-        pass
+        kings = []
+        for i in range(1, 3):
+            k = King()
+            k.id = f'{k.identity} {str(i)}'
+            kings.append(k)
+
+        return kings
 
 
 class Board:
@@ -104,19 +149,69 @@ class Board:
     def insert_figure(self, figure_list: List[Figure]):
         '''add player figures to the field'''
         for index, figure in enumerate(figure_list):
-            if figure.identity == 'p':  # pawns
+            if figure.identity == '♟︎':  # pawns
                 if index <= 7:
                     self.board[1][index] = figure
                 else:
                     self.board[6][index - 8] = figure
+            elif figure.identity == '♞':  # knights
+                if index == 16:
+                    self.board[0][1] = figure
+                elif index == 17:
+                    self.board[0][6] = figure
+                elif index == 18:
+                    self.board[7][1] = figure
+                elif index == 19:
+                    self.board[7][6] = figure
+            elif figure.identity == '♝':  # bishops
+                if index == 20:
+                    self.board[0][2] = figure
+                elif index == 21:
+                    self.board[0][5] = figure
+                if index == 22:
+                    self.board[7][2] = figure
+                elif index == 23:
+                    self.board[7][5] = figure
+            elif figure.identity == '♜':  # rooks
+                if index == 24:
+                    self.board[0][0] = figure
+                elif index == 25:
+                    self.board[0][7] = figure
+                if index == 26:
+                    self.board[7][0] = figure
+                elif index == 27:
+                    self.board[7][7] = figure
+            elif figure.identity == '♛':  # queen
+                if index == 28:
+                    self.board[0][4] = figure
+                elif index == 29:
+                    self.board[7][4] = figure
+            elif figure.identity == '♚':  # king
+                if index == 30:
+                    self.board[0][3] = figure
+                elif index == 31:
+                    self.board[7][3] = figure
 
     def prepare_figure(self):
         '''figure preparation'''
         p = Pawn()
+        k = Knight()
+        b = Bishop()
+        r = Rook()
+        q = Queen()
+        king = King()
+
         figures = []
 
         pawns_list = p.create_pawns()
-        figures.extend(pawns_list)
+        knight_list = k.create_knights()
+        bishop_list = b.create_bishops()
+        rook_list = r.create_rooks()
+        queen_list = q.create_queen()
+        king_list = king.create_king()
+
+        for elements in (pawns_list, knight_list, bishop_list, rook_list, queen_list, king_list):
+            figures.extend(elements)
 
         self.insert_figure(figures)
 
@@ -132,3 +227,14 @@ q - queen(ферзь)
 k - king(король)
 '''
         print(info)
+
+
+def main():
+    board = Board()
+    board.create_board()
+    board.prepare_figure()
+    board.draw_board()
+
+
+if __name__ == '__main__':
+    main()
