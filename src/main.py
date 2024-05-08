@@ -1,3 +1,4 @@
+from colorama import Fore
 from typing import List
 
 
@@ -13,92 +14,145 @@ class Figure:
 
 
 class Pawn(Figure):
-    def __init__(self):
+    def __init__(self, color):
         self.identity = '♟︎'
+        self.color = color
 
     @staticmethod
     def create_pawns():
         pawns = []
-
-        for i in range(1, 17):
-            p = Pawn()
-            p.id = f'{p.identity} {str(i)}'
-            pawns.append(p)
+        for i in range(0, 16):
+            if i <= 7:
+                p = Pawn(Fore.BLACK)
+                p.id = i
+                p.user = 'player-2'
+                pawns.append(p)
+            else:
+                i -= 8
+                p = Pawn(Fore.RED)
+                p.id = i
+                p.user = 'player-1'
+                pawns.append(p)
 
         return pawns
 
 
 class Knight(Figure):
-    def __init__(self) -> None:
+    def __init__(self, color) -> None:
         self.identity = '♞'
+        self.color = color
 
     @staticmethod
     def create_knights():
         knights = []
-        for i in range(1, 5):
-            k = Knight()
-            k.id = f'{k.identity} {str(i)}'
-            knights.append(k)
+        for i in range(0, 4):
+            if i < 2:
+                k = Knight(Fore.BLACK)
+                k.id = i
+                k.user = 'player-2'
+                knights.append(k)
+            else:
+                i -= 2
+                k = Knight(Fore.RED)
+                k.id = i
+                k.user = 'player-1'
+                knights.append(k)
 
         return knights
 
 
 class Bishop(Figure):
-    def __init__(self) -> None:
+    def __init__(self, color) -> None:
         self.identity = '♝'
+        self.color = color
 
     @staticmethod
     def create_bishops():
         bishops = []
-        for i in range(1, 5):
-            b = Bishop()
-            b.id = f'{b.identity} {str(i)}'
-            bishops.append(b)
+        for i in range(0, 4):
+            if i < 2:
+                b = Bishop(Fore.BLACK)
+                b.id = i
+                b.user = 'player-2'
+                bishops.append(b)
+            else:
+                i -= 2
+                b = Bishop(Fore.RED)
+                b.id = i
+                b.user = 'player-1'
+                bishops.append(b)
 
         return bishops
 
 
 class Rook(Figure):
-    def __init__(self) -> None:
+    def __init__(self, color) -> None:
         self.identity = '♜'
+        self.color = color
 
     @staticmethod
     def create_rooks():
         rooks = []
-        for i in range(1, 5):
-            r = Rook()
-            r.id = f'{r.identity} {str(i)}'
-            rooks.append(r)
+        for i in range(0, 4):
+            if i < 2:
+                r = Rook(Fore.BLACK)
+                r.id = i
+                r.user = 'player-2'
+                rooks.append(r)
+            else:
+                i -= 2
+                r = Rook(Fore.RED)
+                r.id = i
+                r.user = 'player-1'
+                rooks.append(r)
 
         return rooks
 
 
 class Queen(Figure):
-    def __init__(self) -> None:
+    def __init__(self, color) -> None:
         self.identity = '♛'
+        self.color = color
 
     @staticmethod
     def create_queen():
         queens = []
-        for i in range(1, 3):
-            q = Queen()
-            q.id = f'{q.identity} {str(i)}'
-            queens.append(q)
+        for i in range(0, 2):
+            if i < 1:
+                q = Queen(Fore.BLACK)
+                q.id = i
+                q.user = 'player-2'
+                queens.append(q)
+            else:
+                i -= 1
+                q = Queen(Fore.RED)
+                q.id = i
+                q.user = 'player-1'
+                queens.append(q)
 
         return queens
 
 
 class King(Figure):
-    def __init__(self) -> None:
+    def __init__(self, color) -> None:
         self.identity = '♚'
+        self.color = color
 
     @staticmethod
     def create_king():
         kings = []
-        for i in range(1, 3):
-            k = King()
-            k.id = f'{k.identity} {str(i)}'
-            kings.append(k)
+        for i in range(0, 2):
+            if i < 1:
+                k = King(Fore.BLACK)
+                k.id = i
+                k.user = 'player-2'
+                kings.append(k)
+            else:
+                i -= 1
+                k = King(Fore.RED)
+                k.id = i
+                k.user = 'player-1'
+                kings.append(k)
 
         return kings
 
@@ -132,7 +186,12 @@ class Board:
             row_items = []
             for item in self.board[row]:
                 if isinstance(item, Figure):
-                    row_items.append(item.identity)
+                    if row < 2:
+                        row_items.append(
+                            item.color + item.identity + Fore.RESET)
+                    elif row >= 6:
+                        row_items.append(
+                            item.color + item.identity + Fore.RESET)
                 else:
                     row_items.append(' ')
             row = char + ' | ' + ' | '.join(row_items) + ' |'
@@ -147,7 +206,10 @@ class Board:
         print(digits)
 
     def insert_figure(self, figure_list: List[Figure]):
-        '''add player figures to the field'''
+        '''add player figures to the field
+        field [0], field[1] - player-2 side
+        field [6], field[7] - player-1 side
+        '''
         for index, figure in enumerate(figure_list):
             if figure.identity == '♟︎':  # pawns
                 if index <= 7:
@@ -194,23 +256,17 @@ class Board:
 
     def prepare_figure(self):
         '''figure preparation'''
-        p = Pawn()
-        k = Knight()
-        b = Bishop()
-        r = Rook()
-        q = Queen()
-        king = King()
-
         figures = []
 
-        pawns_list = p.create_pawns()
-        knight_list = k.create_knights()
-        bishop_list = b.create_bishops()
-        rook_list = r.create_rooks()
-        queen_list = q.create_queen()
-        king_list = king.create_king()
+        pawns_list = Pawn.create_pawns()
+        knight_list = Knight.create_knights()
+        bishop_list = Bishop.create_bishops()
+        rook_list = Rook.create_rooks()
+        queen_list = Queen.create_queen()
+        king_list = King.create_king()
 
-        for elements in (pawns_list, knight_list, bishop_list, rook_list, queen_list, king_list):
+        for elements in (pawns_list, knight_list, bishop_list,
+                         rook_list, queen_list, king_list):
             figures.extend(elements)
 
         self.insert_figure(figures)
